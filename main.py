@@ -64,8 +64,6 @@ def main():
     time.sleep(1)
     work_table=openpyxl.load_workbook(filename='scaler_table.xlsx')
     worksheet=work_table['Scaler_Place']
-    abc=['A','B','C','D','E','F','G','H','Z']
-    Litera=''
     while True:
         element=driver.find_element(By.XPATH, "//*[@id='status-cell-"+str(i)+"-73-0']/div")
         driver.execute_script("arguments[0].scrollIntoView(true);", element)
