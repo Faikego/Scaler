@@ -47,7 +47,7 @@ def date_comparison(x_date,y_date):
         return returner
 def main():
     i=0
-    end_date = '24.08.2023'
+    end_date = '21.08.2023'
     service = Service(executable_path='\chromedriver.exe')
     options = webdriver.ChromeOptions()
     driver = webdriver.Chrome(options=options)
@@ -59,17 +59,18 @@ def main():
     field_finder.send_keys('Pravoe_del0')
     time.sleep(1)
     driver.find_element(By.XPATH, "//*[@id='signin']/section/div/section[2]/form/button").click()
-    time.sleep(7)
+    time.sleep(4)
     driver.get('https://business.kazanexpress.ru/seller/4449/invoices/send')
-    time.sleep(1)
+    time.sleep(1.6)
     work_table=openpyxl.load_workbook(filename='scaler_table.xlsx')
     worksheet=work_table['Scaler_Place']
     while True:
-        element=driver.find_element(By.XPATH, "//*[@id='status-cell-"+str(i)+"-73-0']/div")
-        driver.execute_script("arguments[0].scrollIntoView(true);", element)
-        driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-73-0']/div").click()
-        time.sleep(1)
+            element = driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-73-0']/div")
+            driver.execute_script("arguments[0].scrollIntoView(true);", element)
+            driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-73-0']/div").click()
+        time.sleep(0.6)
         create_number=(driver.find_element(By.XPATH, "//*[@id='openInvoice']/div/div/div[2]/span[2]").text)
+        print(create_number)
         create_date=driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[2]/span[4]').text
         status=driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[2]/span[6]').text
         if status=='Принята на складе':
@@ -86,15 +87,22 @@ def main():
             return
         else:
             vals = []
-            i = 0
+            Inspector = 0
             x = ''
             while x != None:
-                i = i + 1
-                x = worksheet['A' + str(i)].value
+                Inspector = Inspector + 1
+                x = worksheet['A' + str(Inspector)].value
                 vals.append(x)
             for Inspector in vals:
+                # print(type(Inspector),type(create_number))
+                # try:
+                #     Inspector=int(Inspector)
+                #     create_number=int(create_number)
+                #     print(type(Inspector), type(create_number))
+                # except:
+                #     False
                 if Inspector==create_number:
-                    worksheet['A'+str(vals.index(Inspector)+1)]=create_number
+                    #worksheet['A'+str(vals.index(Inspector)+1)]=create_number
                     worksheet['B' + str(vals.index(Inspector) + 1)]=create_date
                     worksheet['C' + str(vals.index(Inspector) + 1)]=status
                     worksheet['D' + str(vals.index(Inspector) + 1)]=full_price
@@ -102,6 +110,7 @@ def main():
                     worksheet['F' + str(vals.index(Inspector) + 1)]=send_to_house
                     worksheet['G' + str(vals.index(Inspector) + 1)]=get_on_house
                     worksheet['H' + str(vals.index(Inspector) + 1)]=purchase_price
+                    print('LOL')
                 elif Inspector==None:
                     worksheet['A'+str(vals.index(Inspector)+1)]=create_number
                     worksheet['B' + str(vals.index(Inspector) + 1)]=create_date
@@ -115,6 +124,7 @@ def main():
             #     Litera=abc[Inspector]
             work_table.save('scaler_table.xlsx')
             i=i+1
+            print(i)
             driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/header/div[2]').click()
 if __name__=='__main__':
     main()
