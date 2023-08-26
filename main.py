@@ -56,15 +56,7 @@ def write_file(create_number,create_date,status,full_price,product_name,send_to_
         x = worksheet['A' + str(Inspector)].value
         vals.append(x)
     for Inspector in vals:
-        # print(type(Inspector),type(create_number))
-        # try:
-        #     Inspector=int(Inspector)
-        #     create_number=int(create_number)
-        #     print(type(Inspector), type(create_number))
-        # except:
-        #     False
         if Inspector == create_number:
-            # worksheet['A'+str(vals.index(Inspector)+1)]=create_number
             worksheet['B' + str(vals.index(Inspector) + 1)] = create_date
             worksheet['C' + str(vals.index(Inspector) + 1)] = status
             worksheet['D' + str(vals.index(Inspector) + 1)] = full_price
@@ -72,7 +64,8 @@ def write_file(create_number,create_date,status,full_price,product_name,send_to_
             worksheet['F' + str(vals.index(Inspector) + 1)] = send_to_house
             worksheet['G' + str(vals.index(Inspector) + 1)] = get_on_house
             worksheet['H' + str(vals.index(Inspector) + 1)] = purchase_price
-            print('LOL')
+            work_table.save('scaler_table.xlsx')
+            return
         elif Inspector == None:
             worksheet['A' + str(vals.index(Inspector) + 1)] = create_number
             worksheet['B' + str(vals.index(Inspector) + 1)] = create_date
@@ -82,10 +75,10 @@ def write_file(create_number,create_date,status,full_price,product_name,send_to_
             worksheet['F' + str(vals.index(Inspector) + 1)] = send_to_house
             worksheet['G' + str(vals.index(Inspector) + 1)] = get_on_house
             worksheet['H' + str(vals.index(Inspector) + 1)] = purchase_price
-    work_table.save('scaler_table.xlsx')
+            work_table.save('scaler_table.xlsx')
 def main():
     i=0
-    end_date = '24.08.2023'
+    end_date = '27.07.2023'
     service = Service(executable_path='\chromedriver.exe')
     options = webdriver.ChromeOptions()
     driver = webdriver.Chrome(options=options)
@@ -105,7 +98,7 @@ def main():
         element = driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-73-0']/div")
         driver.execute_script("arguments[0].scrollIntoView(true);", element)
         driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-73-0']/div").click()
-        time.sleep(0.6)
+        time.sleep(0.8)
         create_number=(driver.find_element(By.XPATH, "//*[@id='openInvoice']/div/div/div[2]/span[2]").text)
         print(create_number)
         create_date=driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[2]/span[4]').text
@@ -123,15 +116,8 @@ def main():
         if create_date==end_date:
             return
         else:
-
-
+            write_file(create_number,create_date,status,full_price,product_name,send_to_house,get_on_house,purchase_price)
             i=i+1
             driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/header/div[2]').click()
 if __name__=='__main__':
     main()
-
-# //*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[2]/td[5]/div/span/em[1]
-# //*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[3]/td[5]/div/span/em[1]
-# //*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[2]/td[4]/div/span/em[1]
-# //*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[2]/td[2]/div
-# //*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[3]/td[2]/div
