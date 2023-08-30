@@ -134,7 +134,7 @@ def main():
     field_finder.send_keys('Scaler_Password')
     time.sleep(1)
     driver.find_element(By.XPATH, "//*[@id='signin']/section/div/section[2]/form/button").click()
-    time.sleep(2)
+    time.sleep(9)
     driver.get(url)
     #time.sleep(1.6)
     while True:
