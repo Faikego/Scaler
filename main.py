@@ -10,7 +10,10 @@ import openpyxl
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
-
+def get_key(d, value):
+    for k, v in d.items():
+        if v == value:
+            return k
 def date_comparison(x_date,y_date):
     def dot_seeker(dot,ifer):
         if ifer == 1:
@@ -49,9 +52,28 @@ def date_comparison(x_date,y_date):
     else:
         returner = False
         return returner
+
+def dot_seeker(dot):
+    dot_finder = dot.rfind('.')
+    dot_findes = dot.find('.')
+    dot = dot[dot_findes + 1:dot_finder]
+    return dot
 def write_file(create_number,create_date,status,full_price,product_name,send_to_house,get_on_house,purchase_price):
-    work_table=openpyxl.load_workbook(filename='scaler_table.xlsx')
-    worksheet=work_table['Scaler_Place']
+    work_table_name=comber.get()
+    try:
+        work_table = openpyxl.load_workbook(filename='Tables/'+work_table_name+'.xlsx')
+        worksheet = work_table['Scaler_Place']
+    except FileNotFoundError:
+        work_table = openpyxl.Workbook()
+        worksheet = work_table.create_sheet(index=0, title='Scaler_Place')
+        worksheet['A1'] = 'Номер накладной'
+        worksheet['B1'] = 'Дата создания'
+        worksheet['C1'] = 'Статус'
+        worksheet['D1'] = 'Общая стоимость'
+        worksheet['E1'] = 'Наименование товара'
+        worksheet['F1'] = 'Отправлено на склад'
+        worksheet['G1'] = 'Принято на складе'
+        worksheet['H1'] = 'Цена закупки'
     vals = []
     Inspector = 0
     x = ''
@@ -68,7 +90,7 @@ def write_file(create_number,create_date,status,full_price,product_name,send_to_
             worksheet['F' + str(vals.index(Inspector) + 1)] = send_to_house
             worksheet['G' + str(vals.index(Inspector) + 1)] = get_on_house
             worksheet['H' + str(vals.index(Inspector) + 1)] = purchase_price
-            work_table.save('scaler_table.xlsx')
+            work_table.save('Tables/'+work_table_name+'.xlsx')
             return
         elif Inspector == None:
             worksheet['A' + str(vals.index(Inspector) + 1)] = create_number
@@ -79,8 +101,10 @@ def write_file(create_number,create_date,status,full_price,product_name,send_to_
             worksheet['F' + str(vals.index(Inspector) + 1)] = send_to_house
             worksheet['G' + str(vals.index(Inspector) + 1)] = get_on_house
             worksheet['H' + str(vals.index(Inspector) + 1)] = purchase_price
-            work_table.save('scaler_table.xlsx')
+            work_table.save('Tables/'+work_table_name+'.xlsx')
 def main():
+    months_dict = {'12': 'Январь', '01': 'Февраль', '02': 'Март', '03': 'Апрель', '04': "Май", '05': "Июнь", "06": "Июль",
+              "07": 'Август', '08': 'Сентябрь', '09': "Октябрь", '10': 'Ноябрь', '11': 'Декабрь'}
     i=0
     url=comber.get()
     if url=="TOPS":
@@ -93,14 +117,15 @@ def main():
         url='https://business.kazanexpress.ru/seller/51310/invoices/send'
     elif url=='Discont OFF':
         url='https://business.kazanexpress.ru/seller/10238/invoices/send'
-    end_date = entry_date.get()
+    end_date = comber_date.get()
+    end_month = get_key(months_dict,str(end_date) )
     try:
         service = Service(executable_path='chromedriver.exe')
         options = webdriver.ChromeOptions()
         driver = webdriver.Chrome(options=options)
     except:
         driver = webdriver.ChromiumEdge()
-    driver.implicitly_wait(90)
+    driver.implicitly_wait(900)
     driver.get(url)
     #time.sleep(15)
     field_finder=driver.find_element(By.XPATH, "//*[@id='username']")
@@ -131,7 +156,8 @@ def main():
             get_on_house=0
         full_price=(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[2]/span[8]').text)
         product_name=(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[1]/td[2]/div').text)
-        if create_date==end_date:
+        create_month=dot_seeker(create_date)
+        if create_month == end_month and status != 'Создана':
             return
         else:
             write_file(create_number,create_date,status,full_price,product_name,send_to_house,get_on_house,purchase_price)
@@ -139,14 +165,15 @@ def main():
             driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/header/div[2]').click()
 # def scaler_window():
 magazines = ['TOPS', 'Стельки', 'Триколор', 'Джибитсы', 'Discont OFF']
+months=['Январь','Февраль','Март','Апрель',"Май","Июнь","Июль",'Август','Сентябрь',"Октябрь",'Ноябрь','Декабрь']
 window = tk.Tk()
 window.title('Scaler')
 window ['bg'] = 'gray10'
-date_label = tk.Label(text="Введите дату (ДД.ММ.ГГГГ)",background='gray10',foreground='white')
+date_label = tk.Label(text="Выберите месяц начала парсинга",background='gray10',foreground='white')
 #date_label ['bg'] = 'gray10'
 date_label.pack()
-entry_date = tk.Entry()
-entry_date.pack()
+comber_date = ttk.Combobox(values=months)
+comber_date.pack()
 magazine_label = tk.Label(text="Выберите магазин",background='gray10',foreground='white')
 #magazine_label ['bg'] = 'gray10'
 magazine_label.pack()
