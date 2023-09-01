@@ -99,9 +99,9 @@ def write_file(create_number,create_date,status,full_price,product_name,send_to_
             worksheet['H' + str(vals.index(Inspector) + 1)] = purchase_price
             work_table.save('Tables/'+work_table_name+'.xlsx')
 def main():
-    if checker_var.get()==1:
+    if checker_internet_var.get()==1:
         multiplier=2
-    elif checker_var.get()==0:
+    elif checker_internet_var.get()==0:
         multiplier=1
     months_dict = {'12': 'Январь', '01': 'Февраль', '02': 'Март', '03': 'Апрель', '04': "Май", '05': "Июнь", "06": "Июль",
               "07": 'Август', '08': 'Сентябрь', '09': "Октябрь", '10': 'Ноябрь', '11': 'Декабрь'}
@@ -122,7 +122,8 @@ def main():
     try:
         service = Service(executable_path='chromedriver.exe')
         options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
+        if checker_graphic_var.get()==1:
+            options.add_argument('--headless')
         driver = webdriver.Chrome(options=options)
     except:
         driver = webdriver.ChromiumEdge()
@@ -183,9 +184,12 @@ comber.pack()
 button = tk.Button(text='Начать выполнение', command=main)
 button ['bg'] = 'white'
 button.pack()
-checker_var=tk.IntVar()
-checker=ttk.Checkbutton(text='Плохой интернет',variable=checker_var)
-checker.pack()
+checker_internet_var=tk.IntVar()
+checker_internet=ttk.Checkbutton(text='Плохой интернет',variable=checker_internet_var)
+checker_internet.pack()
+checker_graphic_var=tk.IntVar()
+checker_graphic=ttk.Checkbutton(text='Отключить графику',variable=checker_graphic_var)
+checker_graphic.pack()
 window.mainloop()
 # if __name__=='__main__':
 #     scaler_window()
