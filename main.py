@@ -6,10 +6,12 @@ from selenium.webdriver.chrome.service import Service
 import openpyxl
 from tkinter import ttk
 import tkinter as tk
+#Нахождение ключа в словаре по значению
 def get_key(d, value):
     for k, v in d.items():
         if v == value:
             return k
+#Сравнение дат(не используется, но лучше оставить)
 def date_comparison(x_date,y_date):
     def dot_seeker(dot,ifer):
         if ifer == 1:
@@ -48,12 +50,13 @@ def date_comparison(x_date,y_date):
     else:
         returner = False
         return returner
-
+#Поиск точки в строке
 def dot_seeker(dot):
     dot_finder = dot.rfind('.')
     dot_findes = dot.find('.')
     dot = dot[dot_findes + 1:dot_finder]
     return dot
+#Запись Excel файла
 def write_file(create_number,create_date,status,full_price,product_name,send_to_house,get_on_house,purchase_price):
     work_table_name=comber.get()
     try:
@@ -98,8 +101,9 @@ def write_file(create_number,create_date,status,full_price,product_name,send_to_
             worksheet['G' + str(vals.index(Inspector) + 1)] = get_on_house
             worksheet['H' + str(vals.index(Inspector) + 1)] = purchase_price
             work_table.save('Tables/'+work_table_name+'.xlsx')
-def main():
-    if checker_internet_var.get()==1:
+def main(): #Главный скрипт по парсингу актов, запускается по кнопке
+    #global checker_internet_var,comber,comber_date,checker_graphic_var (разобраться с работой init(сейчас прога не знает о существовании других данных))
+    if checker_internet_var.get()==1: #Проверка на нажатие "Плохой интернет, замедляет программу в 2 раза
         multiplier=2
     elif checker_internet_var.get()==0:
         multiplier=1
@@ -122,14 +126,13 @@ def main():
     try:
         service = Service(executable_path='chromedriver.exe')
         options = webdriver.ChromeOptions()
-        if checker_graphic_var.get()==1:
+        if checker_graphic_var.get()==1: #Проверка на нажатие кнопки "Выключить графику"
             options.add_argument('--headless')
         driver = webdriver.Chrome(options=options)
     except:
         driver = webdriver.ChromiumEdge()
     driver.implicitly_wait(900)
     driver.get(url)
-    #time.sleep(15)
     field_finder=driver.find_element(By.XPATH, "//*[@id='username']")
     field_finder.send_keys('f4llno@yandex.ru')
     field_finder=driver.find_element(By.XPATH, "//*[@id='password']")
@@ -138,7 +141,6 @@ def main():
     driver.find_element(By.XPATH, "//*[@id='signin']/section/div/section[2]/form/button").click()
     time.sleep(9*multiplier)
     driver.get(url)
-    #time.sleep(1.6)
     while True:
         element = driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-73-0']/div")
         driver.execute_script("arguments[0].scrollIntoView(true);", element)
@@ -165,19 +167,19 @@ def main():
             write_file(create_number,create_date,status,full_price,product_name,send_to_house,get_on_house,purchase_price)
             i=i+1
             driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/header/div[2]').click()
-# def scaler_window():
+
+#Объявляются листы с магазинами и месяцами (используются в
 magazines = ['TOPS', 'Стельки', 'Триколор', 'Джибитсы', 'Discont OFF']
 months=['Январь','Февраль','Март','Апрель',"Май","Июнь","Июль",'Август','Сентябрь',"Октябрь",'Ноябрь','Декабрь']
+# def init(): #Ниже инициализируется окно программы
 window = tk.Tk()
 window.title('Scaler')
 window ['bg'] = 'gray10'
 date_label = tk.Label(text="Выберите месяц начала парсинга",background='gray10',foreground='white')
-#date_label ['bg'] = 'gray10'
 date_label.pack()
 comber_date = ttk.Combobox(values=months)
 comber_date.pack()
 magazine_label = tk.Label(text="Выберите магазин",background='gray10',foreground='white')
-#magazine_label ['bg'] = 'gray10'
 magazine_label.pack()
 comber = ttk.Combobox(values=magazines)
 comber.pack()
@@ -191,5 +193,5 @@ checker_graphic_var=tk.IntVar()
 checker_graphic=ttk.Checkbutton(text='Отключить графику',variable=checker_graphic_var)
 checker_graphic.pack()
 window.mainloop()
-# if __name__=='__main__':
-#     scaler_window()
+# if __name__=="__main__":
+#     init()
