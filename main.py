@@ -1,13 +1,9 @@
-import pendulum
-import datetime
-from datetime import datetime,timedelta,time,date
+from datetime import time
 import time
-import selenium
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 import openpyxl
-from tkinter import *
 from tkinter import ttk
 import tkinter as tk
 def get_key(d, value):
@@ -103,6 +99,10 @@ def write_file(create_number,create_date,status,full_price,product_name,send_to_
             worksheet['H' + str(vals.index(Inspector) + 1)] = purchase_price
             work_table.save('Tables/'+work_table_name+'.xlsx')
 def main():
+    if checker_var.get()==1:
+        multiplier=2
+    elif checker_var.get()==0:
+        multiplier=1
     months_dict = {'12': 'Январь', '01': 'Февраль', '02': 'Март', '03': 'Апрель', '04': "Май", '05': "Июнь", "06": "Июль",
               "07": 'Август', '08': 'Сентябрь', '09': "Октябрь", '10': 'Ноябрь', '11': 'Декабрь'}
     i=0
@@ -122,6 +122,7 @@ def main():
     try:
         service = Service(executable_path='chromedriver.exe')
         options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
         driver = webdriver.Chrome(options=options)
     except:
         driver = webdriver.ChromiumEdge()
@@ -132,9 +133,9 @@ def main():
     field_finder.send_keys('f4llno@yandex.ru')
     field_finder=driver.find_element(By.XPATH, "//*[@id='password']")
     field_finder.send_keys('Scaler_Password')
-    time.sleep(1)
+    time.sleep(1*multiplier)
     driver.find_element(By.XPATH, "//*[@id='signin']/section/div/section[2]/form/button").click()
-    time.sleep(9)
+    time.sleep(9*multiplier)
     driver.get(url)
     #time.sleep(1.6)
     while True:
@@ -182,6 +183,9 @@ comber.pack()
 button = tk.Button(text='Начать выполнение', command=main)
 button ['bg'] = 'white'
 button.pack()
+checker_var=tk.IntVar()
+checker=ttk.Checkbutton(text='Плохой интернет',variable=checker_var)
+checker.pack()
 window.mainloop()
 # if __name__=='__main__':
 #     scaler_window()
