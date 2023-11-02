@@ -1,11 +1,47 @@
 from datetime import time
 import time
+import selenium
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 import openpyxl
 from tkinter import ttk
 import tkinter as tk
+
+#Убирает пропуски и конвертирует всё в сумму
+def library_converter(library):
+    new_library=[]
+    for i in library:
+        if i=='':
+            library.remove('')
+        else:
+            new_library.append(int(i))
+    new_library_summ=sum(new_library)
+    return new_library_summ
+
+#Ищет пики значений, принимает любой список
+def peak_finder(x_library):
+    lier=0
+    main_x=x_library[0]
+    checker=True
+    new_x=0
+    new_x_library=[]
+    for i in x_library:
+        lier=lier+1
+        if checker==True:
+            print(x_library)
+            new_x=int(new_x)+int(x_library[lier])
+            if main_x-new_x==0:
+                checker=False
+                new_x_library.append(new_x)
+                new_x=0
+        else:
+            checker=True
+            try:
+                main_x=int(x_library[lier])
+            except IndexError:
+                peak_summ=sum(new_x_library)
+                return peak_summ
 #Нахождение ключа в словаре по значению
 def get_key(d, value):
     for k, v in d.items():
@@ -107,6 +143,10 @@ def main(): #Главный скрипт по парсингу актов, за�
         multiplier=2
     elif checker_internet_var.get()==0:
         multiplier=1
+    if checker_debugger_var.get()==1: #Проверка на нажатие"Debugging" уменьшает время ожидания от интерфейса до 15 секунд
+        waiting=15
+    elif checker_debugger_var.get()==0:
+        waiting=900
     months_dict = {'12': 'Январь', '01': 'Февраль', '02': 'Март', '03': 'Апрель', '04': "Май", '05': "Июнь", "06": "Июль",
               "07": 'Август', '08': 'Сентябрь', '09': "Октябрь", '10': 'Ноябрь', '11': 'Декабрь'}
     i=0
@@ -131,7 +171,7 @@ def main(): #Главный скрипт по парсингу актов, за�
         driver = webdriver.Chrome(options=options)
     except:
         driver = webdriver.ChromiumEdge()
-    driver.implicitly_wait(900)
+    driver.implicitly_wait(waiting)
     driver.get(url)
     field_finder=driver.find_element(By.XPATH, "//*[@id='username']")
     field_finder.send_keys('f4llno@yandex.ru')
@@ -151,11 +191,36 @@ def main(): #Главный скрипт по парсингу актов, за�
         create_date=driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[2]/span[4]').text
         status=driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[2]/span[6]').text
         if status=='Принята на складе':
-            send_to_house=(driver.find_element(By.XPATH, '//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[1]/td[3]/div').text)
-            get_on_house=(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[1]/td[4]/div').text)
+            checker=True
+            x=1
+            temp_send_to_house=[]
+            temp_get_on_house=[]
+            while checker == True:
+                driver.implicitly_wait(0.75)
+                try:
+                    temp_send_to_house.append(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(x) + ']/td[3]/div').text)
+                    temp_get_on_house.append(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(x) + ']/td[4]/div').text)
+                    x = int(x)
+                    x = x + 1
+                except selenium.common.exceptions.NoSuchElementException:
+                    send_to_house=library_converter(temp_send_to_house)
+                    get_on_house=library_converter(temp_get_on_house)
+                    checker=False
             purchase_price=(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[1]/td[5]/div/span/em[1]').text)
         else:
-            send_to_house=(driver.find_element(By.XPATH, '//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[1]/td[3]/div').text)
+            checker=True
+            x=1
+           # counter=1
+            temp_send_to_house=[]
+            while checker == True:
+                driver.implicitly_wait(0.75)
+                try:
+                    temp_send_to_house.append(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(x) + ']/td[3]/div').text)
+                    x = int(x)
+                    x = x + 1
+                except selenium.common.exceptions.NoSuchElementException:
+                    send_to_house=library_converter(temp_send_to_house)
+                    checker=False
             purchase_price=(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[1]/td[4]/div/span/em[1]').text)
             get_on_house=0
         full_price=(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[2]/span[8]').text)
@@ -192,6 +257,9 @@ checker_internet.pack()
 checker_graphic_var=tk.IntVar()
 checker_graphic=ttk.Checkbutton(text='Отключить графику',variable=checker_graphic_var)
 checker_graphic.pack()
+checker_debugger_var=tk.IntVar()
+checker_debugging=ttk.Checkbutton(text='Debugging',variable=checker_debugger_var)
+checker_debugging.pack()
 window.mainloop()
 # if __name__=="__main__":
 #     init()
