@@ -10,12 +10,17 @@ import tkinter as tk
 
 #Убирает пропуски и конвертирует всё в сумму
 def library_converter(library):
+    print(library)
     new_library=[]
+    x=0
     for i in library:
-        if i=='':
+        x_element=library[x]
+        if x_element=='':
             library.remove('')
         else:
-            new_library.append(int(i))
+            new_library.append(int(x_element))
+            x=x+1
+    print(new_library)
     new_library_summ=sum(new_library)
     return new_library_summ
 
@@ -185,9 +190,9 @@ def main(): #Главный скрипт по парсингу актов, за�
         element = driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-73-0']/div")
         driver.execute_script("arguments[0].scrollIntoView(true);", element)
         driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-73-0']/div").click()
-        #time.sleep(0.8)
+        time.sleep(0.8)
         create_number=(driver.find_element(By.XPATH, "//*[@id='openInvoice']/div/div/div[2]/span[2]").text)
-        #print(create_number)
+        print(create_number)
         create_date=driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[2]/span[4]').text
         status=driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[2]/span[6]').text
         if status=='Принята на складе':
@@ -196,10 +201,15 @@ def main(): #Главный скрипт по парсингу актов, за�
             temp_send_to_house=[]
             temp_get_on_house=[]
             while checker == True:
-                driver.implicitly_wait(0.75)
+                driver.implicitly_wait(1)
                 try:
-                    temp_send_to_house.append(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(x) + ']/td[3]/div').text)
-                    temp_get_on_house.append(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(x) + ']/td[4]/div').text)
+                    try:
+                        element=driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(x) + ']/td[3]/div').text
+                        driver.execute_script("arguments[0].scrollIntoView(true);", element)
+                        temp_send_to_house.append(element)
+                    except selenium.common.exceptions.JavascriptException:
+                        temp_send_to_house.append(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(x) + ']/td[3]/div').text)
+                        temp_get_on_house.append(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(x) + ']/td[4]/div').text)
                     x = int(x)
                     x = x + 1
                 except selenium.common.exceptions.NoSuchElementException:
@@ -210,12 +220,16 @@ def main(): #Главный скрипт по парсингу актов, за�
         else:
             checker=True
             x=1
-           # counter=1
             temp_send_to_house=[]
             while checker == True:
-                driver.implicitly_wait(0.75)
+                driver.implicitly_wait(1)
                 try:
-                    temp_send_to_house.append(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(x) + ']/td[3]/div').text)
+                    try:
+                        element=driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(x) + ']/td[3]/div').text
+                        driver.execute_script("arguments[0].scrollIntoView(true);", element)
+                        temp_send_to_house.append(element)
+                    except selenium.common.exceptions.JavascriptException:
+                        temp_send_to_house.append(driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(x) + ']/td[3]/div').text)
                     x = int(x)
                     x = x + 1
                 except selenium.common.exceptions.NoSuchElementException:
@@ -232,6 +246,7 @@ def main(): #Главный скрипт по парсингу актов, за�
             write_file(create_number,create_date,status,full_price,product_name,send_to_house,get_on_house,purchase_price)
             i=i+1
             driver.find_element(By.XPATH,'//*[@id="openInvoice"]/div/header/div[2]').click()
+            time.sleep(0.3)
 
 #Объявляются листы с магазинами и месяцами (используются в
 magazines = ['TOPS', 'Стельки', 'Триколор', 'Джибитсы', 'Discont OFF']
