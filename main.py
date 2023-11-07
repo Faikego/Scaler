@@ -10,19 +10,18 @@ import tkinter as tk
 
 #Убирает пропуски и конвертирует всё в сумму
 def library_converter(library):
-    print(library)
-    new_library=[]
-    x=0
-    for i in library:
-        x_element=library[x]
-        if x_element=='':
-            library.remove('')
-        else:
-            new_library.append(int(x_element))
-            x=x+1
-    print(new_library)
-    new_library_summ=sum(new_library)
-    return new_library_summ
+    while True:
+        try:
+            new_library_summ=sum(library)
+            return new_library_summ
+        except TypeError:
+            try:
+                library.remove('')
+            except ValueError:
+                x_summ=0
+                for i in library:
+                    x_summ=x_summ+int(i)
+                return x_summ
 
 #Ищет пики значений, принимает любой список
 def peak_finder(x_library):
