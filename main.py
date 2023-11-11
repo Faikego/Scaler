@@ -155,16 +155,7 @@ def main(): #Главный скрипт по парсингу актов, за�
               "07": 'Август', '08': 'Сентябрь', '09': "Октябрь", '10': 'Ноябрь', '11': 'Декабрь'}
     i=0
     url=comber.get()
-    if url=="TOPS":
-        url='https://business.kazanexpress.ru/seller/4449/invoices/send'
-    elif url=="Стельки":
-        url='https://business.kazanexpress.ru/seller/65366/invoices/send'
-    elif url=='Триколор':
-        url='https://business.kazanexpress.ru/seller/10020/invoices/send'
-    elif url=='Джибитсы':
-        url='https://business.kazanexpress.ru/seller/51310/invoices/send'
-    elif url=='Discont OFF':
-        url='https://business.kazanexpress.ru/seller/10238/invoices/send'
+# Здесь должна быть часть кода с выбором магазина
     end_date = comber_date.get()
     end_month = get_key(months_dict,str(end_date) )
     try:
