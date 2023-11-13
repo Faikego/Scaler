@@ -12,8 +12,10 @@
 Устанавливать из requirements.txt:
 
 ```
-selenium
-openpyxl
+openpyxl==3.1.2
+requests==2.31.0
+selenium==4.11.2
+tk==0.1.0
 ```
 
 # Запуск
