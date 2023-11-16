@@ -105,7 +105,6 @@ def main(): #Главный скрипт по парсингу актов, за�
     end_date = comber_date.get()
     end_month = get_key(months_dict,str(end_date) )
     try:
-
         service = Service(executable_path='chromedriver.exe')
         options = webdriver.ChromeOptions()
         if checker_graphic_var.get()==1: #Проверка на нажатие кнопки "Выключить графику"
