@@ -70,4 +70,3 @@ def lopass_seeker(file):
     login=file[:password_index]
     password=file[password_index+1:]
     return login,password
-

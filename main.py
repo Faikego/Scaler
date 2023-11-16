@@ -156,3 +156,4 @@ checker_debugger_var=tk.IntVar()
 checker_debugging=ttk.Checkbutton(text='Debugging',variable=checker_debugger_var)
 checker_debugging.pack()
 window.mainloop()
+
