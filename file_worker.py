@@ -1,8 +1,7 @@
 import openpyxl
 #Запись Excel файла
-def write_file(create_number,create_date,status,product_name,send_to_house,get_on_house):
-    global comber
-    work_table_name=comber.get()
+def write_file(create_number,create_date,status,product_name,send_to_house,get_on_house,magazine):
+    work_table_name=magazine
     try:
         work_table = openpyxl.load_workbook(filename='Tables/'+ work_table_name +'.xlsx')
         worksheet = work_table['Scaler_Place']

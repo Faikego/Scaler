@@ -13,9 +13,9 @@ def main(): #Главный скрипт по парсингу актов, за�
     def parser():
         i = 0
         while True:
-            element = driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-73-0']/div")
+            element = driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-69-0']/div")
             driver.execute_script("arguments[0].scrollIntoView(true);", element)
-            driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-73-0']/div").click()
+            driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-69-0']/div").click()
             time.sleep(0.8)
             create_number = (driver.find_element(By.XPATH, "//*[@id='openInvoice']/div/div/div[2]/span[2]").text)
             print(create_number)
@@ -81,10 +81,11 @@ def main(): #Главный скрипт по парсингу актов, за�
             if end_month == dot_seeker(create_date) and status != 'Создана':
                 return
             else:
+                magazine=comber.get()
                 if get_on_house == 0:
-                    write_file(create_number, create_date, status, product_name, send_to_house, get_on_house)
+                    write_file(create_number, create_date, status, product_name, send_to_house, get_on_house,magazine)
                 else:
-                    write_file(create_number, create_date, status, product_name, send_to_house, get_on_house)
+                    write_file(create_number, create_date, status, product_name, send_to_house, get_on_house,magazine)
                 i = i + 1
                 driver.find_element(By.XPATH, '//*[@id="openInvoice"]/div/header/div[2]').click()
                 time.sleep(0.3)
