@@ -1,4 +1,5 @@
 import openpyxl
+import os
 #Запись Excel файла
 def write_file(create_number,create_date,status,product_name,send_to_house,get_on_house,magazine):
     work_table_name=magazine
@@ -6,15 +7,25 @@ def write_file(create_number,create_date,status,product_name,send_to_house,get_o
         work_table = openpyxl.load_workbook(filename='Tables/'+ work_table_name +'.xlsx')
         worksheet = work_table['Scaler_Place']
     except FileNotFoundError:
-        work_table = openpyxl.Workbook()
-        worksheet = work_table.create_sheet(index=0, title='Scaler_Place')
-        worksheet['A1'] = 'Номер накладной'
-        worksheet['B1'] = 'Дата создания'
-        worksheet['C1'] = 'Статус'
-        worksheet['D1'] = 'Наименование товара'
-        worksheet['E1'] = 'Отправлено на склад'
-        worksheet['F1'] = 'Принято на складе'
-
+        try:
+            os.mkdir("Tables")
+            work_table = openpyxl.Workbook()
+            worksheet = work_table.create_sheet(index=0, title='Scaler_Place')
+            worksheet['A1'] = 'Номер накладной'
+            worksheet['B1'] = 'Дата создания'
+            worksheet['C1'] = 'Статус'
+            worksheet['D1'] = 'Наименование товара'
+            worksheet['E1'] = 'Отправлено на склад'
+            worksheet['F1'] = 'Принято на складе'
+        except FileExistsError:
+            work_table = openpyxl.Workbook()
+            worksheet = work_table.create_sheet(index=0, title='Scaler_Place')
+            worksheet['A1'] = 'Номер накладной'
+            worksheet['B1'] = 'Дата создания'
+            worksheet['C1'] = 'Статус'
+            worksheet['D1'] = 'Наименование товара'
+            worksheet['E1'] = 'Отправлено на склад'
+            worksheet['F1'] = 'Принято на складе'
     vals = []
     Inspector = 0
     x = ''
@@ -39,6 +50,7 @@ def write_file(create_number,create_date,status,product_name,send_to_house,get_o
             worksheet['E' + str(vals.index(Inspector) + 1)] = send_to_house
             worksheet['F' + str(vals.index(Inspector) + 1)] = get_on_house
             work_table.save('Tables/'+work_table_name+'.xlsx')
+
 #Убирает пропуски и конвертирует всё в сумму
 def library_converter(library):
     #print(library)
