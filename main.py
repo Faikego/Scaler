@@ -6,81 +6,41 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from tkinter import ttk
 import tkinter as tk
-from file_worker import write_file,library_converter,get_key,dot_seeker,lopass_seeker
+from file_worker import write_file,library_converter,get_key,sorter_created,sorter_other,dot_seeker
 from changer import changer
 
 def main(): #Главный скрипт по парсингу актов, запускается по кнопке
     def parser():
         i = 0
         while True:
-            element = driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-69-0']/div")
+            element = driver.find_element(By.XPATH, "//*[@id='status-cell-6-69-0']/div")
             driver.execute_script("arguments[0].scrollIntoView(true);", element)
             driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-69-0']/div").click()
             time.sleep(0.8)
             create_number = (driver.find_element(By.XPATH, "//*[@id='openInvoice']/div/div/div[2]/span[2]").text)
             print(create_number)
             create_date = driver.find_element(By.XPATH, '//*[@id="openInvoice"]/div/div/div[2]/span[4]').text
-            status = driver.find_element(By.XPATH, '//*[@id="openInvoice"]/div/div/div[2]/span[6]').text
-            if status == 'Принята на складе':
-                checker = True
-                x = 1
-                temp_send_to_house = []
-                temp_get_on_house = []
-                while checker == True:
-                    driver.implicitly_wait(1)
-                    try:
-                        try:
-                            element = driver.find_element(By.XPATH,
-                                                          '//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(
-                                                              x) + ']/td[3]/div').text
-                            driver.execute_script("arguments[0].scrollIntoView(true);", element)
-                            temp_send_to_house.append(element)
-                        except selenium.common.exceptions.JavascriptException:
-                            temp_send_to_house.append(driver.find_element(By.XPATH,
-                                                                          '//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(
-                                                                              x) + ']/td[3]/div').text)
-                            product_name = driver.find_element(By.XPATH,
-                                                               '//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[1]/td[2]/div').text
-                            temp_get_on_house.append(driver.find_element(By.XPATH,
-                                                                         '//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(
-                                                                             x) + ']/td[4]/div').text)
-                        x = int(x)
-                        x = x + 1
-                    except selenium.common.exceptions.NoSuchElementException:
-                        send_to_house = library_converter(temp_send_to_house)
-                        get_on_house = library_converter(temp_get_on_house)
-                        checker = False
-            else:
-                checker = True
-                x = 1
-                temp_send_to_house = []
-                while checker == True:
-                    driver.implicitly_wait(1)
-                    try:
-                        try:
-                            product_name = (driver.find_element(By.XPATH,
-                                                                '//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[1]/td[2]/div').text)
-                            element = driver.find_element(By.XPATH,
-                                                          '//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(
-                                                              x) + ']/td[3]/div').text
-                            driver.execute_script("arguments[0].scrollIntoView(true);", element)
-                            print(element)
-                            temp_send_to_house.append(element)
-                        except selenium.common.exceptions.JavascriptException:
-                            temp_send_to_house.append(driver.find_element(By.XPATH,
-                                                                          '//*[@id="openInvoice"]/div/div/div[3]/div[2]/div/table/tbody/tr[' + str(
-                                                                              x) + ']/td[3]/div').text)
-                        x = int(x)
-                        x = x + 1
-                    except selenium.common.exceptions.NoSuchElementException:
-
-                        send_to_house = library_converter(temp_send_to_house)
-
-                        checker = False
-                get_on_house = 0
             if end_month == dot_seeker(create_date) and status != 'Создана':
                 return
+            status = driver.find_element(By.XPATH, '//*[@id="openInvoice"]/div/div/div[2]/span[6]').text
+            if status == 'Принята на складе':
+                element_library=[]
+                elements=driver.find_elements(By.CSS_SELECTOR,'.modal-card [data-test-id="table__body-row"] .data-container')
+                for element in elements:
+                    element_library.append(element.text)
+                temp_get_on_house,temp_send_to_house=sorter_other(element_library)
+                send_to_house = library_converter(temp_send_to_house)
+                get_on_house = library_converter(temp_get_on_house)
+                product_name= element_library[0]
             else:
+                element_library = []
+                elements = driver.find_elements(By.CSS_SELECTOR,'.modal-card [data-test-id="table__body-row"] .data-container')
+                for element in elements:
+                    element_library.append(element.text)
+                temp_send_to_house = sorter_created(element_library)
+                send_to_house = library_converter(temp_send_to_house)
+                get_on_house = 0
+                product_name = element_library[0]
                 magazine=comber.get()
                 if get_on_house == 0:
                     write_file(create_number, create_date, status, product_name, send_to_house, get_on_house,magazine)

@@ -81,3 +81,37 @@ def lopass_seeker(file):
     login=file[:password_index]
     password=file[password_index+1:]
     return login,password
+
+def sorter_created(sort_library):
+   output_library=[]
+   counter=0
+   for i in sort_library:
+       if counter==1:
+           output_library.append(i)
+           counter=counter+1
+       elif counter==2:
+           counter=0
+       else:
+           counter=counter+1
+   return output_library
+def sorter_other(sort_library):
+   get_on_house_library=[]
+   send_to_house_library=[]
+   counter=0
+   for i in sort_library:
+       if counter==1:
+           send_to_house_library.append(i)
+           counter=counter+1
+       elif counter==2:
+           get_on_house_library.append(i)
+           counter = counter + 1
+       elif counter==3:
+           counter=0
+       else:
+           counter=counter+1
+   return send_to_house_library,get_on_house_library
+def zero_library_creater(library):
+    output_library=[]
+    for i in library:
+        output_library.append(0)
+    return output_library
