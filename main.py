@@ -13,14 +13,15 @@ def main(): #Главный скрипт по парсингу актов, за�
     def parser():
         i = 0
         while True:
-            element = driver.find_element(By.XPATH, "//*[@id='status-cell-6-69-0']/div")
+            element = driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-69-0']/div")
             driver.execute_script("arguments[0].scrollIntoView(true);", element)
-            driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-69-0']/div").click()
+            element.click()
             time.sleep(0.8)
             create_number = (driver.find_element(By.XPATH, "//*[@id='openInvoice']/div/div/div[2]/span[2]").text)
             print(create_number)
             create_date = driver.find_element(By.XPATH, '//*[@id="openInvoice"]/div/div/div[2]/span[4]').text
             if end_month == dot_seeker(create_date) and status != 'Создана':
+                print('Работа закончена...')
                 return
             status = driver.find_element(By.XPATH, '//*[@id="openInvoice"]/div/div/div[2]/span[6]').text
             if status == 'Принята на складе':
@@ -46,9 +47,9 @@ def main(): #Главный скрипт по парсингу актов, за�
                     write_file(create_number, create_date, status, product_name, send_to_house, get_on_house,magazine)
                 else:
                     write_file(create_number, create_date, status, product_name, send_to_house, get_on_house,magazine)
-                i = i + 1
-                driver.find_element(By.XPATH, '//*[@id="openInvoice"]/div/header/div[2]').click()
-                time.sleep(0.3)
+            i = i + 1
+            driver.find_element(By.XPATH, '//*[@id="openInvoice"]/div/header/div[2]').click()
+            time.sleep(0.3)
 
     if checker_internet_var.get()==1: #Проверка на нажатие "Плохой интернет, замедляет программу в 2 раза
         multiplier=2
