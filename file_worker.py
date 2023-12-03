@@ -15,8 +15,8 @@ def write_file(create_number,create_date,status,product_name,send_to_house,get_o
             worksheet['B1'] = 'Дата создания'
             worksheet['C1'] = 'Статус'
             worksheet['D1'] = 'Наименование товара'
-            worksheet['E1'] = 'Отправлено на склад'
-            worksheet['F1'] = 'Принято на складе'
+            worksheet['E1'] = 'Принято на складе'
+            worksheet['F1'] = 'Отправлено на склад'
         except FileExistsError:
             work_table = openpyxl.Workbook()
             worksheet = work_table.create_sheet(index=0, title='Scaler_Place')
@@ -24,8 +24,8 @@ def write_file(create_number,create_date,status,product_name,send_to_house,get_o
             worksheet['B1'] = 'Дата создания'
             worksheet['C1'] = 'Статус'
             worksheet['D1'] = 'Наименование товара'
-            worksheet['E1'] = 'Отправлено на склад'
-            worksheet['F1'] = 'Принято на складе'
+            worksheet['E1'] = 'Принято на складе'
+            worksheet['F1'] = 'Отправлено на складе'
     vals = []
     Inspector = 0
     x = ''

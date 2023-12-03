@@ -45,7 +45,7 @@ def main(): #Главный скрипт по парсингу актов, за�
                 send_to_house = library_converter(temp_send_to_house)
                 get_on_house = library_converter(temp_get_on_house)
                 product_name= element_library[0]
-                write_file(create_number, create_date, status, product_name, send_to_house, get_on_house, magazine)
+                write_file(create_number, create_date, status, product_name, send_to_house, get_on_house, comber.get())
             elif status == 'Отменена':
                 False
             else:
@@ -57,19 +57,13 @@ def main(): #Главный скрипт по парсингу актов, за�
                 send_to_house = library_converter(temp_send_to_house)
                 get_on_house = 0
                 product_name = element_library[0]
-                magazine=comber.get()
-                print(magazine)
                 if get_on_house == 0:
-                    write_file(create_number, create_date, status, product_name, send_to_house, get_on_house,magazine)
+                    write_file(create_number, create_date, status, product_name, send_to_house, get_on_house,comber.get())
                 else:
-                    write_file(create_number, create_date, status, product_name, send_to_house, get_on_house,magazine)
+                    write_file(create_number, create_date, status, product_name, send_to_house, get_on_house,comber.get())
             i = i + 1
             driver.find_element(By.XPATH, '//*[@id="openInvoice"]/div/header/div[2]').click()
             time.sleep(0.3)
-    if checker_internet_var.get()==1: #Проверка на нажатие "Плохой интернет, замедляет программу в 2 раза
-        multiplier=2
-    elif checker_internet_var.get()==0:
-        multiplier=1
     if checker_debugger_var.get()==1: #Проверка на нажатие "Debugging" уменьшает время ожидания от интерфейса до 15 секунд
         waiting=15
     elif checker_debugger_var.get()==0:
@@ -96,17 +90,15 @@ def main(): #Главный скрипт по парсингу актов, за�
     field_finder.send_keys(login)
     field_finder=driver.find_element(By.XPATH, "//*[@id='password']")
     field_finder.send_keys(password)
-    time.sleep(1*multiplier)
+    time.sleep(1)
     driver.find_element(By.XPATH, "//*[@id='signin']/section/div/section[2]/form/button").click()
-    time.sleep(9*multiplier)
+    time.sleep(9)
     driver.implicitly_wait(30)
     driver.get(url_end)
     parser()
 
-
-
 #Объявляются листы с магазинами и месяцами (используются везде)
-magazines = ['TOPS', 'STELKS', 'Триколор', 'Джибитсы', 'Discont OFF']
+magazines = ['TOPS', 'Стельки', 'Триколор', 'Джибитсы', 'Discont OFF']
 months=['Январь','Февраль','Март','Апрель',"Май","Июнь","Июль",'Август','Сентябрь',"Октябрь",'Ноябрь','Декабрь']
 #Ниже инициализируется окно программы
 window = tk.Tk()
@@ -132,8 +124,6 @@ button = tk.Button(text='Начать выполнение', command=main)
 button ['bg'] = 'white'
 button.pack()
 checker_internet_var=tk.IntVar()
-checker_internet=ttk.Checkbutton(text='Плохой интернет',variable=checker_internet_var)
-checker_internet.pack()
 checker_graphic_var=tk.IntVar()
 checker_graphic=ttk.Checkbutton(text='Отключить графику',variable=checker_graphic_var)
 checker_graphic.pack()
