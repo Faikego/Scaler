@@ -53,12 +53,10 @@ def write_file(create_number,create_date,status,product_name,send_to_house,get_o
 
 #Убирает пропуски и конвертирует всё в сумму
 def library_converter(library):
-    #print(library)
     while True:
         try:
             library.remove('')
         except ValueError:
-            #print(library)
             x_summ = 0
             for i in library:
                 x_summ = x_summ + int(i)
@@ -76,11 +74,6 @@ def dot_seeker(dot):
     dot = dot[dot_findes + 1:dot_finder]
     #print(dot)
     return dot
-def lopass_seeker(file):
-    password_index=file.index(';')
-    login=file[:password_index]
-    password=file[password_index+1:]
-    return login,password
 
 def sorter_created(sort_library):
    output_library=[]
