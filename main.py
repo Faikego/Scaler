@@ -11,14 +11,12 @@ from changer import changer
 
 def main(): #Главный скрипт по парсингу актов, запускается по кнопке
     def parser():
-        i = 0
+        i = 1
         while True:
-            element = driver.find_element(By.XPATH, "//*[@id='status-cell-" + str(i) + "-69-0']/div")
+            element = driver.find_element(By.CSS_SELECTOR, "#invoices > div.table-express > table > tbody > tr:nth-child("+str(i)+")")
             driver.execute_script("arguments[0].scrollIntoView(true);", element)
             element.click()
             time.sleep(0.8)
-            # info_elements= driver.find_element(By.CSS_SELECTOR, "#openInvoice > div > div > div.invoice-info").text
-            # print(info_elements)
             info_elements_list= driver.find_elements(By.CLASS_NAME, 'invoice-info__title')
             if len(info_elements_list) == 4:
                 create_number = (driver.find_element(By.CSS_SELECTOR, "#openInvoice > div > div > div.invoice-info > span:nth-child(2)").text)
