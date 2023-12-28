@@ -109,12 +109,5 @@ comber.pack()
 button = tk.Button(text='Начать выполнение', command=main)
 button ['bg'] = 'white'
 button.pack()
-#checker_internet_var=tk.IntVar()
-#checker_graphic_var=tk.IntVar()
-#checker_graphic=ttk.Checkbutton(text='Отключить графику',variable=checker_graphic_var)
-#checker_graphic.pack()
-#checker_debugger_var=tk.IntVar()
-#checker_debugging=ttk.Checkbutton(text='Debugging',variable=checker_debugger_var)
-#checker_debugging.pack()
 window.mainloop()
 
