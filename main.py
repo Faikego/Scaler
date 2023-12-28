@@ -1,13 +1,12 @@
 from datetime import time
 import time
-import selenium
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from tkinter import ttk
 import tkinter as tk
-from file_worker import write_file,library_converter,get_key,sorter_created,sorter_other,dot_seeker
-from changer import changer
+from constants import *
+from file_worker import *
 
 def main(): #Главный скрипт по парсингу актов, запускается по кнопке
     def parser():
@@ -62,25 +61,17 @@ def main(): #Главный скрипт по парсингу актов, за�
             i = i + 1
             driver.find_element(By.XPATH, '//*[@id="openInvoice"]/div/header/div[2]').click()
             time.sleep(0.3)
-    if checker_debugger_var.get()==1: #Проверка на нажатие "Debugging" уменьшает время ожидания от интерфейса до 15 секунд
-        waiting=15
-    elif checker_debugger_var.get()==0:
-        waiting=900
+#    if checker_debugger_var.get()==1: #Проверка на нажатие "Debugging" уменьшает время ожидания от интерфейса до 15 секунд
+#        waiting=15
+#    elif checker_debugger_var.get()==0:
+#        waiting=900
     months_dict = {'12': 'Январь', '01': 'Февраль', '02': 'Март', '03': 'Апрель', '04': "Май", '05': "Июнь", "06": "Июль",
               "07": 'Август', '08': 'Сентябрь', '09': "Октябрь", '10': 'Ноябрь', '11': 'Декабрь'}
-    url_end=changer(comber.get())
-    print(url_end)
+    url_end=url_dict[comber.get()]
     end_date = comber_date.get()
     end_month = get_key(months_dict,str(end_date))
-    try:
-        service = Service(executable_path='chromedriver.exe')
-        options = webdriver.ChromeOptions()
-        if checker_graphic_var.get()==1: #Проверка на нажатие кнопки "Выключить графику"
-            options.add_argument('--headless')
-        driver = webdriver.Chrome(options=options)
-    except:
-        driver = webdriver.ChromiumEdge()
-    driver.implicitly_wait(waiting)
+#    checker=checker_graphic_var.get()
+    driver = browser_init()
     driver.get(url_end)
     login = login_entry.get()
     password = password_entry.get()
@@ -95,9 +86,6 @@ def main(): #Главный скрипт по парсингу актов, за�
     driver.get(url_end)
     parser()
 
-#Объявляются листы с магазинами и месяцами (используются везде)
-magazines = ['TOPS', 'Стельки', 'Триколор', 'Джибитсы', 'Discont OFF']
-months=['Январь','Февраль','Март','Апрель',"Май","Июнь","Июль",'Август','Сентябрь',"Октябрь",'Ноябрь','Декабрь']
 #Ниже инициализируется окно программы
 window = tk.Tk()
 window.title('Scaler')
@@ -112,21 +100,21 @@ password_text.pack()
 password_entry.pack()
 date_label = tk.Label(text="Выберите месяц начала парсинга",background='gray10',foreground='white')
 date_label.pack()
-comber_date = ttk.Combobox(values=months)
+comber_date = ttk.Combobox(values=months_lib)
 comber_date.pack()
 magazine_label = tk.Label(text="Выберите магазин",background='gray10',foreground='white')
 magazine_label.pack()
-comber = ttk.Combobox(values=magazines)
+comber = ttk.Combobox(values=magazines_lib)
 comber.pack()
 button = tk.Button(text='Начать выполнение', command=main)
 button ['bg'] = 'white'
 button.pack()
-checker_internet_var=tk.IntVar()
-checker_graphic_var=tk.IntVar()
-checker_graphic=ttk.Checkbutton(text='Отключить графику',variable=checker_graphic_var)
-checker_graphic.pack()
-checker_debugger_var=tk.IntVar()
-checker_debugging=ttk.Checkbutton(text='Debugging',variable=checker_debugger_var)
-checker_debugging.pack()
+#checker_internet_var=tk.IntVar()
+#checker_graphic_var=tk.IntVar()
+#checker_graphic=ttk.Checkbutton(text='Отключить графику',variable=checker_graphic_var)
+#checker_graphic.pack()
+#checker_debugger_var=tk.IntVar()
+#checker_debugging=ttk.Checkbutton(text='Debugging',variable=checker_debugger_var)
+#checker_debugging.pack()
 window.mainloop()
 

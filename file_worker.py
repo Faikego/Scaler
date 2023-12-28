@@ -1,5 +1,14 @@
 import openpyxl
 import os
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+def browser_init():
+    service = Service(executable_path='chromedriver.exe')
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    driver = webdriver.Chrome(options=options)
+    driver.implicitly_wait(50)
+    return driver
 #Запись Excel файла
 def write_file(create_number,create_date,status,product_name,send_to_house,get_on_house,magazine):
     work_table_name=magazine
